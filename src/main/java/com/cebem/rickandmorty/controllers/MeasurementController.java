@@ -38,16 +38,17 @@ public class MeasurementController {
               ArrayList<MeasurementModel> measures = measurementService.getAllMeasurementsOfSensor(Long.parseLong(id));
         
               ArrayList<MeasurementModel> measuresSelect = new ArrayList<>();
-              if(measures.size()<20){
+               if(measures.size()<20){
                     measuresSelect = measures;
               }else{
                //     measuresSelect = new ArrayList<>(Arrays.asList(subArray(measures.toArray(new MeasurementModel[0]), measures.size()-10, measures.size()-1)));
               
-              for(int i=0;i<19;i++){
+              for(int i=measures.size()-19;i<measures.size();i++){
                     measuresSelect.add(measures.get(i));
               }
             }
-        
+           // measuresSelect = measures;
+
         String json = "{";
         json+="\"measures\":[";
         for(int i=0;i<measuresSelect.size();i++){
