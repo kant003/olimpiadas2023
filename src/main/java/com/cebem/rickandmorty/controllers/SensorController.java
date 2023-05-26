@@ -21,9 +21,9 @@ public class SensorController {
     SensorService sensorService;
 
 
-    @GetMapping("/home")
+    @GetMapping("/")
     public String home(){
-       return "Bienvenido a la API de sensores";
+       return "Bienvenido a la API de sensores de aridez";
     } 
     //http://localhost:8080/sensors
     @GetMapping("/sensors")
