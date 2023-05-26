@@ -49,7 +49,7 @@ public class SensorController {
         }
     }
 
-    // http://localhost:8080/insert/sensor?mac=345&city=vigo&latitud=-8.6833933&longitud=23434
+    // http://localhost:8080/insert/sensor?mac=345&city=Vigo&latitud=42169618&longitud=-86833933
     @GetMapping("/insert/sensor")
     public String insertMeasurement(@RequestParam("mac") String mac, @RequestParam("city") String city,@RequestParam("latitud") String latitud,@RequestParam("longitud") String longitud){
         SensorModel model = new SensorModel();

@@ -86,6 +86,8 @@ public class MeasurementModel {
         r+= "\"humidity\":"+humidity+",";
         r+= "\"soilHumidity\":"+soilHumidity+",";
         r+= "\"sensorId\":"+sensor.id+",";
+        r+= "\"lat\":"+sensor.latitud+",";
+        r+= "\"lng\":"+sensor.longitud+",";
         r+= "\"sensorMac\":\""+sensor.mac+"\",";
         r+= "\"createdAt\":\""+createdAt+"\"";
         r+= "}";
