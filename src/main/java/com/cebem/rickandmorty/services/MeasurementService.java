@@ -44,8 +44,8 @@ public class MeasurementService {
         }
     }
 
-    public List<MeasurementModel> findMeasuresBySensorIdOrderByCreatedAtDesc(Long idSensor){
-        return measurementRepository.findBySensorIdOrderByCreatedAtDesc(idSensor);
+    public List<MeasurementModel> findMeasuresBySensorIdOrderByCreatedAtAsc(Long idSensor){
+        return measurementRepository.findBySensorIdOrderByCreatedAtAsc(idSensor);
     }
 
 

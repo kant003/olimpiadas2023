@@ -21,7 +21,7 @@ public class SensorController {
     SensorService sensorService;
 
 
-    @GetMapping("/")
+    @GetMapping("/home")
     public String home(){
        return "Bienvenido a la API de sensores";
     } 
@@ -57,8 +57,8 @@ public class SensorController {
         SensorModel model = new SensorModel();
         model.setMac(mac);
         model.setCity(city);
-        model.setLatitud(Long.parseLong(latitud));
-        model.setLongitud(Long.parseLong(longitud));
+        model.setLatitud(latitud);
+        model.setLongitud(longitud);
         sensorService.createSensor(model);
         return "Sensor creado con éxito";
     }

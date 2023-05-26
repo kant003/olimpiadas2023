@@ -15,7 +15,7 @@ import com.cebem.rickandmorty.models.SensorModel;
 public interface MeasurementRepository extends CrudRepository<MeasurementModel, Long> {
     List<MeasurementModel> findBySensorId(Long sensorId);
 
-    List<MeasurementModel> findBySensorIdOrderByCreatedAtDesc(Long sensorId);
+    List<MeasurementModel> findBySensorIdOrderByCreatedAtAsc(Long sensorId);
     /*@Query("SELECT m FROM measurements m WHERE m.sensor = :sensor ORDER BY m.createdAt DESC")
     ArrayList<MeasurementModel> findLatestMedidaBySensor(@Param("sensor") SensorModel sensor);
     

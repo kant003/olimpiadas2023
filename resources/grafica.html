@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="node_modules/heatmap.js/build/heatmap.js"></script>
+    <script src="leaflet-heatmap.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@latest/dist/Chart.min.js"></script>
+
+  </head>
+<body>
+
+  <canvas id="grafica"></canvas>
+ 
+
+  <script>
+
+async function start(){
+     // config map
+      const response = await fetch("https://olimpiadas.up.railway.app/getMeasuresOfSensor/1")
+      const json = await response.json()
+      const data = json.measures
+      console.log(data)
+
+   
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const medida = urlParams.get('medida')
+
+
+    const sensorIds = data.map(obj => obj.sensorId);
+    let values = data.map(obj => obj.soilHumidity);
+    let label = "Humedad de suelo"
+    if(medida == "soilHumidity")
+    {
+    values = data.map(obj => obj.soilHumidity);
+    label="Humedad de suelo"
+  } 
+  
+  if(medida == "temperature") 
+  {
+    values = data.map(obj => obj.temperature);
+    label="Temperatura ambiente"
+  }
+  if(medida == "humidity") 
+  {
+    values = data.map(obj => obj.humidity);
+    
+    label="Humedad ambiente"
+    }
+  
+      const createdAtValues = data.map(obj => obj.createdAt);
+
+     // config map
+// Obtener una referencia al elemento canvas del DOM
+const $grafica = document.querySelector("#grafica");
+// Las etiquetas son las que van en el eje X. 
+const etiquetas = ["Enero", "Febrero", "Marzo", "Abril"]
+// Podemos tener varios conjuntos de datos. Comencemos con uno
+const datosVentas2020 = {
+    label: "Ventas por mes",
+    data: [5000, 1500, 8000, 5102], // La data es un arreglo que debe tener la misma cantidad de valores que la cantidad de etiquetas
+    backgroundColor: 'rgba(54, 162, 235, 0.2)', // Color de fondo
+    borderColor: 'rgba(54, 162, 235, 1)', // Color del borde
+    borderWidth: 1,// Ancho del borde
+};
+/*new Chart($grafica, {
+    type: 'line',// Tipo de gráfica
+    data: {
+        labels: etiquetas,
+        datasets: [
+            datosVentas2020,
+            // Aquí más datos...
+        ]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }],
+        },
+    }
+});*/
+
+
+const myChart = new Chart($grafica, {
+  type: 'line',
+  data: {
+    labels: createdAtValues,
+    datasets: [{
+      label: label,
+      data: values,
+      borderColor: 'blue',
+      fill: false
+    }]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      x: {
+        type: 'time',
+        time: {
+          unit: 'day',
+          displayFormats: {
+            day: 'MMM D'
+          }
+        },
+        ticks: {
+          source: 'labels'
+        }
+      },
+      y: {
+        beginAtZero: true
+      }
+    },
+    plugins: {
+      tooltip: {
+        enabled: false
+      },
+      datalabels: {
+        anchor: 'end',
+        align: 'top',
+        formatter: function(value) {
+          return `Valor: ${value}`;
+        }
+      }
+    }
+  }
+});
+}
+start()
+      </script>
+  </body>
+</html>
+
+

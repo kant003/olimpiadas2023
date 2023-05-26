@@ -9,13 +9,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class WebController {
 
-  @RequestMapping("/data")
-  public String charactersTemplate(Model modelo) {
+  
+
+  @RequestMapping("/")
+  public String client(Model modelo) {
     //CharactersModel charactersModel = rickAndMortyService2.getAllCharacters();
     
     //modelo.addAttribute("creator", "Creado por Angel");
     //modelo.addAttribute("characters", charactersModel.results);
-    return "rickandmortyall";
+    return "index";
   }
 
 }

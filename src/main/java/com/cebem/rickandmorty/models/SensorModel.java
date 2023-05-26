@@ -15,18 +15,18 @@ public class SensorModel {
     @Column(unique = true, nullable = false)
     long id;
     String mac;
-    double latitud;
-    double longitud;
-    public double getLatitud() {
+    String latitud;
+    String longitud;
+    public String getLatitud() {
         return latitud;
     }
-    public void setLatitud(double latitud) {
+    public void setLatitud(String latitud) {
         this.latitud = latitud;
     }
-    public double getLongitud() {
+    public String getLongitud() {
         return longitud;
     }
-    public void setLongitud(double longitud) {
+    public void setLongitud(String longitud) {
         this.longitud = longitud;
     }
     public String getCity() {

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="heatmap.js"></script>
+    <script src="leaflet-heatmap.js"></script>
+  </head>
+  <body>
+    <div id="map"></div>
+    <!-- <script type="module" src="/main.js"></script> -->
+
+
+    <style>
+      #map { height: 100vh; }
+      </style>
+</head>
+<body>
+
+  <div id="map"></div>
+
+  <script>
+
+    async function start(){
+     // config map
+      const response = await fetch("https://olimpiadas.up.railway.app/measures")
+      const json = await response.json()
+      const data = json.measures
+      console.log(data)
+     
+    /* {
+  "measures": [
+    {
+      "id": 3,
+      "temperature": 444.0,
+      "humidity": 544.0,
+      "soilHumidity": 664.0,
+      "sensorId": 1,
+      "sensorMac": "345",
+      "createdAt": "2023-05-26T03:48:06.275897"
+    },
+    {
+      "id": 4,
+      "temperature": 744.0,
+      "humidity": 744.0,
+      "soilHumidity": 764.0,
+      "sensorId": 2,
+      "sensorMac": "345",
+      "createdAt": "2023-05-26T03:49:04.296677"
+    }
+  ]
+}*/
+     function getData(){
+      return [
+          {lat: 42.23282, lng:-8.72264, count: 50, sensorID:1},
+          {lat: 42.43282, lng:-8.52264, count: 60, sensorID:2, test:true},
+          {lat: 42.73282, lng:-8.72264, count: 80, sensorID:3, test:true},
+          {lat: 42.63282, lng:-7.72264, count: 50, sensorID:4, test:true},
+          {lat: 42.93282, lng:-5.72264, count: 30, sensorID:5, test:true},
+      ]
+     }
+/*
+http://localhost:8080/insert/measurement?temperature=50&humidity=50&soilHumidity=50&sensorId=1
+
+http://localhost:8080/insert/measurement?temperature=60&humidity=60&soilHumidity=60&sensorId=2
+http://localhost:8080/insert/measurement?temperature=80&humidity=80&soilHumidity=80&sensorId=3
+http://localhost:8080/insert/measurement?temperature=50&humidity=50&soilHumidity=50&sensorId=4
+http://localhost:8080/insert/measurement?temperature=30&humidity=30&soilHumidity=30&sensorId=5
+
+
+     http://olimpiadas.up.railway.app/insert/sensor?mac=346&city=Vigo&latitud=42.23282&longitud=-8.72264
+     http://olimpiadas.up.railway.app/insert/sensor?mac=347&city=Corunna&latitud=42.43282&longitud=-8.52264
+     http://olimpiadas.up.railway.app/insert/sensor?mac=348&city=Lugo&latitud=42.73282&longitud=-8.72264
+     http://olimpiadas.up.railway.app/insert/sensor?mac=349&city=Ourense&latitud=42.63282&longitud=-7.72264
+     http://olimpiadas.up.railway.app/insert/sensor?mac=340&city=Mondonnedo&latitud=42.93282&longitud=-5.72264
+
+*/
+// magnification with which the map will start
+const zoom = 8;
+// co-ordinates
+const lat = 42.43282;
+const lng = -8.72264;
+
+var testData = {
+        max: 100,
+        data: data
+      };
+
+
+
+var baseLayer = L.tileLayer(
+'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+  attribution: '...',
+  maxZoom: 18
+}
+);
+
+
+var cfg = {
+// radius should be small ONLY if scaleRadius is true (or small radius is intended)
+// if scaleRadius is false it will be the constant radius used in pixels
+"radius": 0.3,
+"maxOpacity": .5,
+// scales the radius based on map zoom
+"scaleRadius": true,
+// if set to false the heatmap uses the global maximum for colorization
+// if activated: uses the data maximum within the current map boundaries
+//   (there will always be a red spot with useLocalExtremas true)
+"useLocalExtrema": true,
+// which field name in your data represents the latitude - default "lat"
+latField: 'lat',
+// which field name in your data represents the longitude - default "lng"
+lngField: 'lng',
+// which field name in your data represents the data value - default "value"
+valueField: 'soilHumidity'
+};
+
+
+
+var heatmapLayer = new HeatmapOverlay(cfg);
+
+
+
+var map = new L.Map('map', {
+center: new L.LatLng(lat, lng),
+zoom: zoom,
+ layers: [baseLayer, heatmapLayer]
+});
+
+
+
+// Used to load and display tile layers on the map
+// Most tile servers require attribution, which you can set under `Layer`
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+attribution:
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+}).addTo(map);
+
+
+
+var greenIcon = L.icon({
+    iconUrl: 'marker.png',
+
+    iconSize:     [22, 50], // size of the icon
+    shadowSize:   [50, 64], // size of the shadow
+    iconAnchor:   [12, 50], // point of the icon which will correspond to marker's location
+    shadowAnchor: [4, 62],  // the same for the shadow
+    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+});
+
+
+
+data.forEach(function (item) {
+
+  if(item.sensorId!==1) marker = L.marker([item.lat, item.lng]).addTo(map);
+  else marker = L.marker([item.lat, item.lng], {icon: greenIcon}).addTo(map);
+ 
+  marker.bindPopup(
+    `
+    <br><b>Sensor Id:${item.sensorId}</b>
+  <br>Humedad tierra: ${item.soilHumidity}
+  <br>Temperatura: ${item.temperature}
+  <br>Humedad ambiental: ${item.humidity}
+  <br><a href="grafica.html?medida=soilHumidity">Ver gráfica humedad suelo</a>
+  <br><a href="grafica.html?medida=temperature">Ver gráfica temperatura</a>
+  <br><a href="grafica.html?medida=humidity">Ver gráfica de humedad ambiente</a>
+  `).openPopup();
+
+});
+
+
+heatmapLayer.setData(testData);
+    }
+
+    start();
+      </script>
+  </body>
+</html>
+
+

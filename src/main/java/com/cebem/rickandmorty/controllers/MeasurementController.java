@@ -1,6 +1,7 @@
 package com.cebem.rickandmorty.controllers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,16 +28,31 @@ public class MeasurementController {
     @Autowired
     SensorRepository sensorRepository;
 
+    public static<T> T[] subArray(T[] array, int beg, int end) {
+        return Arrays.copyOfRange(array, beg, end + 1);
+    }
+
     // http://localhost:8080/getMeasuresOfSensor/1
     @GetMapping("/getMeasuresOfSensor/{id}")
     public String memesDelete(@PathVariable String id) {
               ArrayList<MeasurementModel> measures = measurementService.getAllMeasurementsOfSensor(Long.parseLong(id));
         
+              ArrayList<MeasurementModel> measuresSelect = new ArrayList<>();
+              if(measures.size()<20){
+                    measuresSelect = measures;
+              }else{
+               //     measuresSelect = new ArrayList<>(Arrays.asList(subArray(measures.toArray(new MeasurementModel[0]), measures.size()-10, measures.size()-1)));
+              
+              for(int i=0;i<19;i++){
+                    measuresSelect.add(measures.get(i));
+              }
+            }
+        
         String json = "{";
         json+="\"measures\":[";
-        for(int i=0;i<measures.size();i++){
-            json+=measures.get(i).toJson();
-            if(i!=measures.size()-1) json+=",";
+        for(int i=0;i<measuresSelect.size();i++){
+            json+=measuresSelect.get(i).toJson();
+            if(i!=measuresSelect.size()-1) json+=",";
         }
         json+="]";
         json+="}";
@@ -66,7 +82,7 @@ public class MeasurementController {
 
         List<MeasurementModel> latestMedidas = new ArrayList<>();
         for (SensorModel sensor : sensors) {
-            List<MeasurementModel> medidas = measurementService.findMeasuresBySensorIdOrderByCreatedAtDesc(sensor.getId());
+            List<MeasurementModel> medidas = measurementService.findMeasuresBySensorIdOrderByCreatedAtAsc(sensor.getId());
             if (!medidas.isEmpty()) {
                 latestMedidas.add(medidas.get(0));
             }
