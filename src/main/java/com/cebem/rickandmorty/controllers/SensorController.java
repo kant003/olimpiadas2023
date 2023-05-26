@@ -2,6 +2,7 @@ package com.cebem.rickandmorty.controllers;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ import com.cebem.rickandmorty.services.SensorService;
 
 
 @RestController
+@CrossOrigin(origins = "*")
 public class SensorController {
     
      @Autowired
