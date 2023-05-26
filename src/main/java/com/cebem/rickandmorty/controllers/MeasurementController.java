@@ -1,6 +1,7 @@
 package com.cebem.rickandmorty.controllers;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,19 +15,15 @@ import com.cebem.rickandmorty.services.SensorService;
 import com.cebem.rickandmorty.models.MeasurementModel;
 import com.cebem.rickandmorty.models.SensorModel;
 import com.cebem.rickandmorty.repositories.SensorRepository;
-import com.cebem.rickandmorty.repositories.MeasurementRepository;
 
 @RestController
 public class MeasurementController {
-    @Autowired
+     @Autowired
     MeasurementService measurementService;
     @Autowired
     SensorService sensorService;
     @Autowired
     SensorRepository sensorRepository;
-
-    @Autowired
-    MeasurementRepository measurementRepository;
 
     // http://localhost:8080/getMeasuresOfSensor/1
     @GetMapping("/getMeasuresOfSensor/{id}")
@@ -38,6 +35,47 @@ public class MeasurementController {
         for(int i=0;i<measures.size();i++){
             json+=measures.get(i).toJson();
             if(i!=measures.size()-1) json+=",";
+        }
+        json+="]";
+        json+="}";
+        return json;
+    }
+
+
+   /*  List<MeasurementModel> findLatestMedidasByAllSensors() {
+        
+        List<SensorModel> sensors = findAllSensors();
+        List<MeasurementModel> latestMedidas = new ArrayList<>();
+        for (SensorModel sensor : sensors) {
+            List<MeasurementModel> medidas = findBySensorIdOrderByCreatedAtDesc(sensor);
+            if (!medidas.isEmpty()) {
+                latestMedidas.add(medidas.get(0));
+            }
+        }
+        return latestMedidas;
+    }*/
+
+
+
+     @GetMapping("/measures")
+    public String lasterMeasuresAllSensors() {
+
+        List<SensorModel> sensors = sensorService.getAllSensors();
+
+        List<MeasurementModel> latestMedidas = new ArrayList<>();
+        for (SensorModel sensor : sensors) {
+            List<MeasurementModel> medidas = measurementService.findMeasuresBySensorIdOrderByCreatedAtDesc(sensor.getId());
+            if (!medidas.isEmpty()) {
+                latestMedidas.add(medidas.get(0));
+            }
+        }
+        
+        
+        String json = "{";
+        json+="\"measures\":[";
+        for(int i=0;i<latestMedidas.size();i++){
+            json+=latestMedidas.get(i).toJson();
+            if(i!=latestMedidas.size()-1) json+=",";
         }
         json+="]";
         json+="}";
@@ -62,7 +100,7 @@ public class MeasurementController {
 
                 medida.setSensor(sensor);
 
-                measurementRepository.save(medida);
+                measurementService.createMeasurement(medida);
             } catch (Exception ex) {
                 return "no se puede crear la medida";
             }

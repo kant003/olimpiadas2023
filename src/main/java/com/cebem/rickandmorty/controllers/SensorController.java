@@ -12,13 +12,17 @@ import com.cebem.rickandmorty.models.SensorModel;
 import com.cebem.rickandmorty.services.SensorService;
 
 
-
 @RestController
 public class SensorController {
     
-    @Autowired
+     @Autowired
     SensorService sensorService;
 
+
+    @GetMapping("/")
+    public String home(){
+       return "Bienvenido a la API de sensores";
+    } 
     //http://localhost:8080/sensors
     @GetMapping("/sensors")
     public String memes(){
@@ -45,7 +49,7 @@ public class SensorController {
         }
     }
 
-    // http://localhost:8080/insert/sensor?mac=345&city=vigo&latitud=2342342&longitud=23434
+    // http://localhost:8080/insert/sensor?mac=345&city=vigo&latitud=-8.6833933&longitud=23434
     @GetMapping("/insert/sensor")
     public String insertMeasurement(@RequestParam("mac") String mac, @RequestParam("city") String city,@RequestParam("latitud") String latitud,@RequestParam("longitud") String longitud){
         SensorModel model = new SensorModel();

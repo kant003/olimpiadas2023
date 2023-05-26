@@ -11,24 +11,33 @@ import com.cebem.rickandmorty.models.SensorModel;
 @Service
 public class SensorService {
 
+
+    private final SensorRepository sensorRepository;
+
     @Autowired
-    SensorRepository sensorRepositorie;
+    public SensorService(SensorRepository sensorRepository) {
+        this.sensorRepository = sensorRepository;
+    }
+
+
+    ///@Autowired
+    //SensorRepository sensorRepositorie;
 
     public ArrayList<SensorModel> getAllSensors() {
-        return (ArrayList<SensorModel>) sensorRepositorie.findAll();
+        return (ArrayList<SensorModel>) sensorRepository.findAll();
     }
 
     public boolean existsId(long id) {
-        return sensorRepositorie.existsById(id);
+        return sensorRepository.existsById(id);
     }
 
     public SensorModel createSensor(SensorModel model) {
-        return sensorRepositorie.save(model);
+        return sensorRepository.save(model);
     }
 
     public boolean deleteSensor(long id) {
         try {
-            sensorRepositorie.deleteById(id);
+            sensorRepository.deleteById(id);
             return true;
         } catch (IllegalArgumentException ex) {
             return false;

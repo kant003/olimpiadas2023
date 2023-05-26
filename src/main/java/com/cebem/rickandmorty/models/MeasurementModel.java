@@ -1,5 +1,6 @@
 package com.cebem.rickandmorty.models;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import jakarta.annotation.Generated;
@@ -10,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -24,9 +26,13 @@ public class MeasurementModel {
     float temperature;
     float humidity;
     float soilHumidity;
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    Date createdAt;
+
+    private LocalDateTime createdAt;
+
+    //@Temporal(TemporalType.TIMESTAMP)
+    //@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    //Date createdAt;
+    
     @ManyToOne
     @JoinColumn(name = "sensor_id")
     SensorModel sensor;
@@ -62,6 +68,17 @@ public class MeasurementModel {
         this.soilHumidity = soilHumidity;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    // Método anotado con @PrePersist para establecer la fecha de creación antes de guardar en la base de datos
+
+    @PrePersist
+    public void setCreatedAt() {
+        this.createdAt = LocalDateTime.now();
+    }
+
     public String toJson(){
         String r = "{";
         r+= "\"id\":"+id+",";
@@ -69,7 +86,8 @@ public class MeasurementModel {
         r+= "\"humidity\":"+humidity+",";
         r+= "\"soilHumidity\":"+soilHumidity+",";
         r+= "\"sensorId\":"+sensor.id+",";
-        r+= "\"sensorMac\":\""+sensor.mac+"\"";
+        r+= "\"sensorMac\":\""+sensor.mac+"\",";
+        r+= "\"createdAt\":\""+createdAt+"\"";
         r+= "}";
         return r;
     }

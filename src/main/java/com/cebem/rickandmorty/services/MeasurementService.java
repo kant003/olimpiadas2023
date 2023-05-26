@@ -2,6 +2,7 @@ package com.cebem.rickandmorty.services;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,4 +43,15 @@ public class MeasurementService {
             return false;
         }
     }
+
+    public List<MeasurementModel> findMeasuresBySensorIdOrderByCreatedAtDesc(Long idSensor){
+        return measurementRepository.findBySensorIdOrderByCreatedAtDesc(idSensor);
+    }
+
+
+   
+
+   /*  public ArrayList<MeasurementModel>  findLatestMedidasByAllSensors(){
+        return (ArrayList<MeasurementModel>) measurementRepository.findLatestMedidasByAllSensors();
+    }*/
 }
